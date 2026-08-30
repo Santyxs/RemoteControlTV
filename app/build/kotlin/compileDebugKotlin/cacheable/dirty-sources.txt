@@ -1,3 +1,0 @@
-/workspaces/RemoteControlTV/app/src/main/java/pwf/xenova/tvremote/MainActivity.kt
-/workspaces/RemoteControlTV/app/src/main/java/pwf/xenova/tvremote/ui/theme/Theme.kt
-/workspaces/RemoteControlTV/app/src/main/java/pwf/xenova/tvremote/IrRemoteController.kt

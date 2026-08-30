@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -151,7 +152,7 @@ fun BrandSelector(current: TvBrand, onSelected: (TvBrand) -> Unit) {
     Box {
         TextButton(onClick = { expanded = true }) {
             Text(current.displayName, color = TextSecondary, fontSize = 13.sp)
-            Icon(Icons.Filled.ArrowDropDown, null, tint = TextSecondary)
+            Icon(imageVector = Icons.Filled.ArrowDropDown, contentDescription = null, tint = TextSecondary)
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             TvBrand.entries.forEach { b ->
@@ -174,7 +175,7 @@ fun OutlinedIconPill(icon: ImageVector, label: String?, onClick: () -> Unit) {
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Icon(icon, null, tint = TextPrimary)
+        Icon(imageVector = icon, contentDescription = null, tint = TextPrimary)
     }
 }
 
@@ -217,7 +218,7 @@ fun RoundIconButton(icon: ImageVector, onClick: () -> Unit) {
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Icon(icon, null, tint = TextPrimary)
+        Icon(imageVector = icon, contentDescription = null, tint = TextPrimary)
     }
 }
 
@@ -319,7 +320,7 @@ fun RoundIconButtonSmall(icon: ImageVector, modifier: Modifier = Modifier, onCli
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Icon(icon, null, tint = TextPrimary)
+        Icon(imageVector = icon, contentDescription = null, tint = TextPrimary)
     }
 }
 
@@ -369,7 +370,7 @@ fun BottomNav(selected: Int, onSelect: (Int) -> Unit) {
             NavigationBarItem(
                 selected = selected == index,
                 onClick = { onSelect(index) },
-                icon = { Icon(icon, null) },
+                icon = { Icon(imageVector = icon, contentDescription = null) },
                 label = { Text(label, fontSize = 11.sp) },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = AccentBlue,
