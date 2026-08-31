@@ -6,7 +6,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="TV Remote"
+        android:label="Control TV"
         android:theme="@style/Theme.TVRemote"
         android:supportsRtl="true">
 

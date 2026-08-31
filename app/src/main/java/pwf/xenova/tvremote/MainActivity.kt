@@ -225,46 +225,51 @@ fun RoundIconButton(icon: ImageVector, onClick: () -> Unit) {
 @Composable
 fun DPad(onAction: (RemoteAction) -> Unit) {
     val gradientBrush = Brush.sweepGradient(
-        listOf(GradientPink, GradientPurple, GradientBlue, GradientOrange, GradientPink)
+        listOf(DpadCyan, DpadBlue, DpadDeepBlue, DpadTeal, DpadCyan)
     )
 
     Box(
         modifier = Modifier.size(220.dp),
         contentAlignment = Alignment.Center
     ) {
-        // Contorno gradiente en forma de cruz redondeada
+        // Contorno gradiente en forma de cruz con esquinas redondeadas:
+        // unión de dos rectángulos redondeados (vertical + horizontal), técnica
+        // fiable en vez de calcular arcos a mano.
         Canvas(modifier = Modifier.matchParentSize()) {
             val w = size.width
             val h = size.height
+            val cx = w / 2f
+            val cy = h / 2f
             val armW = w * 0.34f
-            val corner = armW / 2f
+            val half = armW / 2f
+            val outer = w * 0.44f
+            val cornerRadius = androidx.compose.ui.geometry.CornerRadius(half * 0.6f, half * 0.6f)
 
-            val path = Path().apply {
-                // Cruz redondeada: usamos un path simple con esquinas redondeadas
-                val cx = w / 2f
-                val cy = h / 2f
-                val half = armW / 2f
-                val outer = w * 0.44f
-
-                moveTo(cx - half, cy - outer)
-                lineTo(cx + half, cy - outer)
-                lineTo(cx + half, cy - half)
-                lineTo(cx + outer, cy - half)
-                lineTo(cx + outer, cy + half)
-                lineTo(cx + half, cy + half)
-                lineTo(cx + half, cy + outer)
-                lineTo(cx - half, cy + outer)
-                lineTo(cx - half, cy + half)
-                lineTo(cx - outer, cy + half)
-                lineTo(cx - outer, cy - half)
-                lineTo(cx - half, cy - half)
-                close()
+            val verticalBar = Path().apply {
+                addRoundRect(
+                    androidx.compose.ui.geometry.RoundRect(
+                        left = cx - half, top = cy - outer,
+                        right = cx + half, bottom = cy + outer,
+                        cornerRadius = cornerRadius
+                    )
+                )
             }
+            val horizontalBar = Path().apply {
+                addRoundRect(
+                    androidx.compose.ui.geometry.RoundRect(
+                        left = cx - outer, top = cy - half,
+                        right = cx + outer, bottom = cy + half,
+                        cornerRadius = cornerRadius
+                    )
+                )
+            }
+            val crossPath = Path()
+            crossPath.op(verticalBar, horizontalBar, androidx.compose.ui.graphics.PathOperation.Union)
 
             drawPath(
-                path = path,
+                path = crossPath,
                 brush = gradientBrush,
-                style = Stroke(width = corner * 0.18f)
+                style = Stroke(width = half * 0.28f)
             )
         }
 
@@ -298,7 +303,7 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
                     .clip(CircleShape)
                     .background(
                         Brush.linearGradient(
-                            listOf(GradientOrange, Color(0xFFE0447A), GradientPurple, GradientBlue)
+                            listOf(DpadTeal, DpadCyan, DpadBlue, DpadDeepBlue)
                         )
                     )
                     .clickable { onAction(RemoteAction.OK) },
@@ -320,7 +325,12 @@ fun RoundIconButtonSmall(icon: ImageVector, modifier: Modifier = Modifier, onCli
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Icon(imageVector = icon, contentDescription = null, tint = TextPrimary)
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = TextPrimary,
+            modifier = Modifier.size(34.dp)
+        )
     }
 }
 
@@ -363,7 +373,6 @@ fun BottomNav(selected: Int, onSelect: (Int) -> Unit) {
         val items = listOf(
             Triple("Remote", Icons.Filled.SettingsRemote, 0),
             Triple("Control", Icons.Filled.GridView, 1),
-            Triple("Mirroring", Icons.Filled.Cast, 2),
             Triple("Settings", Icons.Filled.Settings, 3)
         )
         items.forEach { (label, icon, index) ->
@@ -383,4 +392,3 @@ fun BottomNav(selected: Int, onSelect: (Int) -> Unit) {
         }
     }
 }
-
