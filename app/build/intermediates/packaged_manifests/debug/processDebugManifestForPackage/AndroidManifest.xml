@@ -24,7 +24,7 @@
         android:debuggable="true"
         android:extractNativeLibs="false"
         android:icon="@mipmap/ic_launcher"
-        android:label="TV Remote"
+        android:label="Control TV"
         android:supportsRtl="true"
         android:theme="@style/Theme.TVRemote" >
         <activity
