@@ -72,77 +72,165 @@ fun RemoteScreen(irController: IrRemoteController, onAction: (RemoteAction) -> U
                 .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(16.dp))
-
-            BrandSelector(brand) { brand = it; irController.brand = it }
-
-            Spacer(Modifier.height(12.dp))
-
-            // Fila superior: power / guide / hdmi / home
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                OutlinedIconPill(Icons.Filled.PowerSettingsNew, null) { onAction(RemoteAction.POWER) }
-                OutlinedTextPill("GUIDE") { onAction(RemoteAction.GUIDE) }
-                OutlinedTextPill("HDMI") { onAction(RemoteAction.HDMI) }
-                OutlinedIconPill(Icons.Filled.Home, null) { onAction(RemoteAction.HOME) }
+            when (selectedTab) {
+                0 -> RemoteTabContent(onAction)
+                1 -> ControlTabContent(onAction)
+                else -> SettingsTabContent(brand) { brand = it; irController.brand = it }
             }
-
-            Spacer(Modifier.height(28.dp))
-
-            // Fila TOOLS - Dpad - INFO
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                RoundLabelButton("TOOLS") { onAction(RemoteAction.TOOLS) }
-                DPad(onAction)
-                RoundLabelButton("INFO") { onAction(RemoteAction.INFO) }
-            }
-
-            Spacer(Modifier.height(20.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                RoundIconButton(Icons.Filled.Undo) { onAction(RemoteAction.BACK) }
-                RoundLabelButton("EXIT") { onAction(RemoteAction.EXIT) }
-            }
-
-            Spacer(Modifier.height(28.dp))
-
-            // Fila VOL - MENU/MUTE/SOURCE - CH
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                VerticalRockerPill(
-                    label = "VOL",
-                    onPlus = { onAction(RemoteAction.VOL_UP) },
-                    onMinus = { onAction(RemoteAction.VOL_DOWN) }
-                )
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    RoundLabelButton("MENU") { onAction(RemoteAction.MENU) }
-                    RoundIconButton(Icons.Filled.VolumeOff) { onAction(RemoteAction.MUTE) }
-                    RoundIconButton(Icons.Filled.Input) { onAction(RemoteAction.SOURCE) }
-                }
-
-                VerticalRockerPill(
-                    label = "CH",
-                    onPlus = { onAction(RemoteAction.CH_UP) },
-                    onMinus = { onAction(RemoteAction.CH_DOWN) }
-                )
-            }
-
-            Spacer(Modifier.height(20.dp))
         }
+    }
+}
+
+@Composable
+fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
+    Spacer(Modifier.height(20.dp))
+
+    // Fila superior: power / guide / hdmi / home
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        OutlinedIconPill(Icons.Filled.PowerSettingsNew, null) { onAction(RemoteAction.POWER) }
+        OutlinedTextPill("GUIDE") { onAction(RemoteAction.GUIDE) }
+        OutlinedTextPill("HDMI") { onAction(RemoteAction.HDMI) }
+        OutlinedIconPill(Icons.Filled.Home, null) { onAction(RemoteAction.HOME) }
+    }
+
+    Spacer(Modifier.height(28.dp))
+
+    // Fila TOOLS - Dpad - INFO
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        RoundLabelButton("TOOLS") { onAction(RemoteAction.TOOLS) }
+        DPad(onAction)
+        RoundLabelButton("INFO") { onAction(RemoteAction.INFO) }
+    }
+
+    Spacer(Modifier.height(20.dp))
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        RoundIconButton(Icons.Filled.Undo) { onAction(RemoteAction.BACK) }
+        RoundLabelButton("EXIT") { onAction(RemoteAction.EXIT) }
+    }
+
+    Spacer(Modifier.height(28.dp))
+
+    // Fila VOL - MENU/MUTE/SOURCE - CH
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        VerticalRockerPill(
+            label = "VOL",
+            onPlus = { onAction(RemoteAction.VOL_UP) },
+            onMinus = { onAction(RemoteAction.VOL_DOWN) }
+        )
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(14.dp)
+        ) {
+            RoundLabelButton("MENU") { onAction(RemoteAction.MENU) }
+            RoundIconButton(Icons.Filled.VolumeOff) { onAction(RemoteAction.MUTE) }
+            RoundIconButton(Icons.Filled.Input) { onAction(RemoteAction.SOURCE) }
+        }
+
+        VerticalRockerPill(
+            label = "CH",
+            onPlus = { onAction(RemoteAction.CH_UP) },
+            onMinus = { onAction(RemoteAction.CH_DOWN) }
+        )
+    }
+
+    Spacer(Modifier.height(20.dp))
+}
+
+@Composable
+fun ControlTabContent(onAction: (RemoteAction) -> Unit) {
+    Spacer(Modifier.height(32.dp))
+
+    Text("Canal", color = TextSecondary, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+
+    Spacer(Modifier.height(20.dp))
+
+    val numberRows = listOf(
+        listOf(RemoteAction.NUM_1 to "1", RemoteAction.NUM_2 to "2", RemoteAction.NUM_3 to "3"),
+        listOf(RemoteAction.NUM_4 to "4", RemoteAction.NUM_5 to "5", RemoteAction.NUM_6 to "6"),
+        listOf(RemoteAction.NUM_7 to "7", RemoteAction.NUM_8 to "8", RemoteAction.NUM_9 to "9")
+    )
+
+    numberRows.forEach { row ->
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            row.forEach { (action, label) ->
+                NumberKey(label) { onAction(action) }
+            }
+        }
+        Spacer(Modifier.height(16.dp))
+    }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        NumberKey("0") { onAction(RemoteAction.NUM_0) }
+    }
+
+    Spacer(Modifier.height(32.dp))
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        VerticalRockerPill(
+            label = "CH",
+            onPlus = { onAction(RemoteAction.CH_UP) },
+            onMinus = { onAction(RemoteAction.CH_DOWN) }
+        )
+    }
+}
+
+@Composable
+fun NumberKey(label: String, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .size(72.dp)
+            .clip(CircleShape)
+            .background(ButtonBg)
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(label, color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Medium)
+    }
+}
+
+@Composable
+fun SettingsTabContent(brand: TvBrand, onBrandChange: (TvBrand) -> Unit) {
+    Spacer(Modifier.height(32.dp))
+
+    Text("Ajustes", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+
+    Spacer(Modifier.height(28.dp))
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(ButtonBg)
+            .padding(horizontal = 18.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text("Marca de televisión", color = TextPrimary, fontSize = 15.sp)
+        BrandSelector(brand, onBrandChange)
     }
 }
 
@@ -319,7 +407,7 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
 fun RoundIconButtonSmall(icon: ImageVector, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Box(
         modifier = modifier
-            .size(66.dp)
+            .size(52.dp)
             .clip(CircleShape)
             .background(ButtonBg)
             .clickable { onClick() },
@@ -329,7 +417,7 @@ fun RoundIconButtonSmall(icon: ImageVector, modifier: Modifier = Modifier, onCli
             imageVector = icon,
             contentDescription = null,
             tint = TextPrimary,
-            modifier = Modifier.size(34.dp)
+            modifier = Modifier.size(24.dp)
         )
     }
 }
