@@ -96,7 +96,7 @@ fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
         OutlinedIconPill(Icons.Filled.Home, null) { onAction(RemoteAction.HOME) }
     }
 
-    Spacer(Modifier.height(52.dp))
+    Spacer(Modifier.height(90.dp))
 
     // Fila TOOLS - Dpad - INFO
     Row(
@@ -350,26 +350,35 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
             )
         }
 
-        // Botones direccionales
+        // Botones direccionales: posicionados a una distancia fija del centro,
+        // pegados al OK y dentro del contorno de la cruz (no en el borde del Box)
         Box(Modifier.fillMaxSize()) {
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowUp,
-                modifier = Modifier.align(Alignment.TopCenter)
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .offset(y = (-66).dp)
             ) { onAction(RemoteAction.UP) }
 
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowDown,
-                modifier = Modifier.align(Alignment.BottomCenter)
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .offset(y = 66.dp)
             ) { onAction(RemoteAction.DOWN) }
 
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowLeft,
-                modifier = Modifier.align(Alignment.CenterStart)
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .offset(x = (-66).dp)
             ) { onAction(RemoteAction.LEFT) }
 
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowRight,
-                modifier = Modifier.align(Alignment.CenterEnd)
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .offset(x = 66.dp)
             ) { onAction(RemoteAction.RIGHT) }
 
             // OK central
