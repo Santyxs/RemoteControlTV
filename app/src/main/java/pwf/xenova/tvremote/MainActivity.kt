@@ -96,7 +96,7 @@ fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
         OutlinedIconPill(Icons.Filled.Home, null) { onAction(RemoteAction.HOME) }
     }
 
-    Spacer(Modifier.height(28.dp))
+    Spacer(Modifier.height(52.dp))
 
     // Fila TOOLS - Dpad - INFO
     Row(
@@ -185,17 +185,6 @@ fun ControlTabContent(onAction: (RemoteAction) -> Unit) {
     }
 
     Spacer(Modifier.height(32.dp))
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        VerticalRockerPill(
-            label = "CH",
-            onPlus = { onAction(RemoteAction.CH_UP) },
-            onMinus = { onAction(RemoteAction.CH_DOWN) }
-        )
-    }
 }
 
 @Composable
