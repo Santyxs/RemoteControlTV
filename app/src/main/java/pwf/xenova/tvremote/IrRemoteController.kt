@@ -10,7 +10,8 @@ enum class RemoteAction {
     POWER, VOL_UP, VOL_DOWN, MUTE,
     CH_UP, CH_DOWN,
     UP, DOWN, LEFT, RIGHT, OK,
-    MENU, EXIT, BACK, HOME, GUIDE, HDMI, INFO, TOOLS, SOURCE
+    MENU, EXIT, BACK, HOME, GUIDE, HDMI, INFO, TOOLS, SOURCE,
+    NUM_0, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9
 }
 
 /**
@@ -69,7 +70,17 @@ class IrRemoteController(context: Context) {
             RemoteAction.HDMI to (0x07 to 0x22),
             RemoteAction.INFO to (0x07 to 0x1F),
             RemoteAction.TOOLS to (0x07 to 0x4B),
-            RemoteAction.SOURCE to (0x07 to 0x22)
+            RemoteAction.SOURCE to (0x07 to 0x22),
+            RemoteAction.NUM_1 to (0x07 to 0x04),
+            RemoteAction.NUM_2 to (0x07 to 0x05),
+            RemoteAction.NUM_3 to (0x07 to 0x06),
+            RemoteAction.NUM_4 to (0x07 to 0x08),
+            RemoteAction.NUM_5 to (0x07 to 0x09),
+            RemoteAction.NUM_6 to (0x07 to 0x0A),
+            RemoteAction.NUM_7 to (0x07 to 0x0C),
+            RemoteAction.NUM_8 to (0x07 to 0x0D),
+            RemoteAction.NUM_9 to (0x07 to 0x0E),
+            RemoteAction.NUM_0 to (0x07 to 0x11)
         ),
         TvBrand.LG to mapOf(
             RemoteAction.POWER to (0x04 to 0x08),
@@ -91,7 +102,17 @@ class IrRemoteController(context: Context) {
             RemoteAction.HDMI to (0x04 to 0x0B),
             RemoteAction.INFO to (0x04 to 0xAA),
             RemoteAction.TOOLS to (0x04 to 0xF0),
-            RemoteAction.SOURCE to (0x04 to 0x0B)
+            RemoteAction.SOURCE to (0x04 to 0x0B),
+            RemoteAction.NUM_1 to (0x04 to 0x10),
+            RemoteAction.NUM_2 to (0x04 to 0x11),
+            RemoteAction.NUM_3 to (0x04 to 0x12),
+            RemoteAction.NUM_4 to (0x04 to 0x13),
+            RemoteAction.NUM_5 to (0x04 to 0x14),
+            RemoteAction.NUM_6 to (0x04 to 0x15),
+            RemoteAction.NUM_7 to (0x04 to 0x16),
+            RemoteAction.NUM_8 to (0x04 to 0x17),
+            RemoteAction.NUM_9 to (0x04 to 0x18),
+            RemoteAction.NUM_0 to (0x04 to 0x19)
         ),
         TvBrand.SONY to mapOf(
             RemoteAction.POWER to (0x01 to 0x15),
@@ -113,7 +134,17 @@ class IrRemoteController(context: Context) {
             RemoteAction.HDMI to (0x01 to 0xA5),
             RemoteAction.INFO to (0x01 to 0x25),
             RemoteAction.TOOLS to (0x01 to 0x81),
-            RemoteAction.SOURCE to (0x01 to 0xA5)
+            RemoteAction.SOURCE to (0x01 to 0xA5),
+            RemoteAction.NUM_1 to (0x01 to 0x00),
+            RemoteAction.NUM_2 to (0x01 to 0x01),
+            RemoteAction.NUM_3 to (0x01 to 0x02),
+            RemoteAction.NUM_4 to (0x01 to 0x03),
+            RemoteAction.NUM_5 to (0x01 to 0x04),
+            RemoteAction.NUM_6 to (0x01 to 0x05),
+            RemoteAction.NUM_7 to (0x01 to 0x06),
+            RemoteAction.NUM_8 to (0x01 to 0x07),
+            RemoteAction.NUM_9 to (0x01 to 0x08),
+            RemoteAction.NUM_0 to (0x01 to 0x09)
         ),
         TvBrand.GENERIC_NEC to mapOf(
             RemoteAction.POWER to (0x00 to 0x0C),
@@ -121,7 +152,17 @@ class IrRemoteController(context: Context) {
             RemoteAction.VOL_DOWN to (0x00 to 0x11),
             RemoteAction.MUTE to (0x00 to 0x0D),
             RemoteAction.CH_UP to (0x00 to 0x20),
-            RemoteAction.CH_DOWN to (0x00 to 0x21)
+            RemoteAction.CH_DOWN to (0x00 to 0x21),
+            RemoteAction.NUM_1 to (0x00 to 0x01),
+            RemoteAction.NUM_2 to (0x00 to 0x02),
+            RemoteAction.NUM_3 to (0x00 to 0x03),
+            RemoteAction.NUM_4 to (0x00 to 0x04),
+            RemoteAction.NUM_5 to (0x00 to 0x05),
+            RemoteAction.NUM_6 to (0x00 to 0x06),
+            RemoteAction.NUM_7 to (0x00 to 0x07),
+            RemoteAction.NUM_8 to (0x00 to 0x08),
+            RemoteAction.NUM_9 to (0x00 to 0x09),
+            RemoteAction.NUM_0 to (0x00 to 0x0A)
         )
     )
 
