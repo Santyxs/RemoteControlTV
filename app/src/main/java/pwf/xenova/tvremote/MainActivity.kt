@@ -96,17 +96,25 @@ fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
         OutlinedIconPill(Icons.Filled.Home, null) { onAction(RemoteAction.HOME) }
     }
 
-    Spacer(Modifier.height(90.dp))
+    Spacer(Modifier.height(18.dp))
 
-    // Fila TOOLS - Dpad - INFO
+    // TOOLS debajo de POWER, INFO debajo de HOME
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         RoundLabelButton("TOOLS") { onAction(RemoteAction.TOOLS) }
-        DPad(onAction)
         RoundLabelButton("INFO") { onAction(RemoteAction.INFO) }
+    }
+
+    Spacer(Modifier.height(64.dp))
+
+    // Dpad centrado
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        DPad(onAction)
     }
 
     Spacer(Modifier.height(20.dp))
