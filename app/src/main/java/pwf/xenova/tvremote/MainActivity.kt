@@ -83,80 +83,70 @@ fun RemoteScreen(irController: IrRemoteController, onAction: (RemoteAction) -> U
 
 @Composable
 fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
-    Spacer(Modifier.height(20.dp))
-
-    // Fila superior: power / guide / hdmi / home
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(28.dp)
     ) {
-        OutlinedIconPill(Icons.Filled.PowerSettingsNew, null) { onAction(RemoteAction.POWER) }
-        OutlinedTextPill("GUIDE") { onAction(RemoteAction.GUIDE) }
-        OutlinedTextPill("HDMI") { onAction(RemoteAction.HDMI) }
-        OutlinedIconPill(Icons.Filled.Home, null) { onAction(RemoteAction.HOME) }
-    }
-
-    Spacer(Modifier.height(18.dp))
-
-    // TOOLS debajo de POWER, INFO debajo de HOME
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        RoundLabelButton("TOOLS") { onAction(RemoteAction.TOOLS) }
-        RoundLabelButton("INFO") { onAction(RemoteAction.INFO) }
-    }
-
-    Spacer(Modifier.height(16.dp))
-
-    // Dpad centrado
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        DPad(onAction)
-    }
-
-    Spacer(Modifier.height(20.dp))
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        RoundIconButton(Icons.Filled.Undo) { onAction(RemoteAction.BACK) }
-        RoundLabelButton("EXIT") { onAction(RemoteAction.EXIT) }
-    }
-
-    Spacer(Modifier.height(28.dp))
-
-    // Fila VOL - MENU/MUTE/SOURCE - CH
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        VerticalRockerPill(
-            label = "VOL",
-            onPlus = { onAction(RemoteAction.VOL_UP) },
-            onMinus = { onAction(RemoteAction.VOL_DOWN) }
-        )
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+        // Fila superior: power / guide / hdmi / home
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            RoundLabelButton("MENU") { onAction(RemoteAction.MENU) }
-            RoundIconButton(Icons.Filled.VolumeOff) { onAction(RemoteAction.MUTE) }
-            RoundIconButton(Icons.Filled.Input) { onAction(RemoteAction.SOURCE) }
+            OutlinedIconPill(Icons.Filled.PowerSettingsNew, null) { onAction(RemoteAction.POWER) }
+            OutlinedTextPill("GUIDE") { onAction(RemoteAction.GUIDE) }
+            OutlinedTextPill("HDMI") { onAction(RemoteAction.HDMI) }
+            OutlinedIconPill(Icons.Filled.Home, null) { onAction(RemoteAction.HOME) }
         }
 
-        VerticalRockerPill(
-            label = "CH",
-            onPlus = { onAction(RemoteAction.CH_UP) },
-            onMinus = { onAction(RemoteAction.CH_DOWN) }
-        )
-    }
+        // TOOLS debajo de POWER, INFO debajo de HOME
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            RoundLabelButton("TOOLS") { onAction(RemoteAction.TOOLS) }
+            RoundLabelButton("INFO") { onAction(RemoteAction.INFO) }
+        }
 
-    Spacer(Modifier.height(20.dp))
+        // Dpad centrado
+        DPad(onAction)
+
+        // Back / Exit
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            RoundIconButton(Icons.Filled.Undo) { onAction(RemoteAction.BACK) }
+            RoundLabelButton("EXIT") { onAction(RemoteAction.EXIT) }
+        }
+
+        // Fila VOL - MENU/MUTE/SOURCE - CH
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            VerticalRockerPill(
+                label = "VOL",
+                onPlus = { onAction(RemoteAction.VOL_UP) },
+                onMinus = { onAction(RemoteAction.VOL_DOWN) }
+            )
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                RoundLabelButton("MENU") { onAction(RemoteAction.MENU) }
+                RoundIconButton(Icons.Filled.VolumeOff) { onAction(RemoteAction.MUTE) }
+                RoundIconButton(Icons.Filled.Input) { onAction(RemoteAction.SOURCE) }
+            }
+
+            VerticalRockerPill(
+                label = "CH",
+                onPlus = { onAction(RemoteAction.CH_UP) },
+                onMinus = { onAction(RemoteAction.CH_DOWN) }
+            )
+        }
+    }
 }
 
 @Composable
