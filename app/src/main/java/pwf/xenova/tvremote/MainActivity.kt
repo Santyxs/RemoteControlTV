@@ -107,7 +107,7 @@ fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
         RoundLabelButton("INFO") { onAction(RemoteAction.INFO) }
     }
 
-    Spacer(Modifier.height(64.dp))
+    Spacer(Modifier.height(16.dp))
 
     // Dpad centrado
     Row(
