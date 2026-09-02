@@ -120,6 +120,8 @@ fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
             RoundLabelButton("EXIT") { onAction(RemoteAction.EXIT) }
         }
 
+        Spacer(Modifier.height(12.dp))
+
         // Fila VOL - MENU/MUTE/SOURCE - CH
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -273,13 +275,13 @@ fun OutlinedTextPill(text: String, onClick: () -> Unit) {
 fun RoundLabelButton(text: String, onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .size(72.dp)
+            .size(60.dp)
             .clip(CircleShape)
             .background(ButtonBg)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Text(text, color = TextSecondary, fontSize = 12.sp, fontWeight = FontWeight.Medium)
+        Text(text, color = TextSecondary, fontSize = 11.sp, fontWeight = FontWeight.Medium)
     }
 }
 
@@ -304,7 +306,7 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
     )
 
     Box(
-        modifier = Modifier.size(190.dp),
+        modifier = Modifier.size(220.dp),
         contentAlignment = Alignment.Center
     ) {
         // Contorno gradiente en forma de cruz con esquinas redondeadas:
@@ -355,28 +357,28 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
                 icon = Icons.Filled.KeyboardArrowUp,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(y = (-66).dp)
+                    .offset(y = (-74).dp)
             ) { onAction(RemoteAction.UP) }
 
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowDown,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(y = 66.dp)
+                    .offset(y = 74.dp)
             ) { onAction(RemoteAction.DOWN) }
 
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowLeft,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(x = (-66).dp)
+                    .offset(x = (-74).dp)
             ) { onAction(RemoteAction.LEFT) }
 
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowRight,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(x = 66.dp)
+                    .offset(x = 74.dp)
             ) { onAction(RemoteAction.RIGHT) }
 
             // OK central
@@ -403,7 +405,7 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
 fun RoundIconButtonSmall(icon: ImageVector, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Box(
         modifier = modifier
-            .size(52.dp)
+            .size(66.dp)
             .clip(CircleShape)
             .background(ButtonBg)
             .clickable { onClick() },
@@ -413,7 +415,7 @@ fun RoundIconButtonSmall(icon: ImageVector, modifier: Modifier = Modifier, onCli
             imageVector = icon,
             contentDescription = null,
             tint = TextPrimary,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(34.dp)
         )
     }
 }
@@ -423,7 +425,7 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
     Column(
         modifier = Modifier
             .width(64.dp)
-            .height(230.dp)
+            .height(205.dp)
             .clip(RoundedCornerShape(32.dp))
             .background(ButtonBg),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -432,7 +434,7 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(78.dp)
+                .height(68.dp)
                 .clickable { onPlus() },
             contentAlignment = Alignment.Center
         ) {
@@ -442,7 +444,7 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(78.dp)
+                .height(68.dp)
                 .clickable { onMinus() },
             contentAlignment = Alignment.Center
         ) {
