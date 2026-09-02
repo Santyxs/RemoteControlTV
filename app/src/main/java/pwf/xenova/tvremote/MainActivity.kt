@@ -84,9 +84,9 @@ fun RemoteScreen(irController: IrRemoteController, onAction: (RemoteAction) -> U
 @Composable
 fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 24.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 6.dp, bottom = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(28.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Fila superior: power / guide / hdmi / home
         Row(
@@ -304,7 +304,7 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
     )
 
     Box(
-        modifier = Modifier.size(220.dp),
+        modifier = Modifier.size(190.dp),
         contentAlignment = Alignment.Center
     ) {
         // Contorno gradiente en forma de cruz con esquinas redondeadas:
@@ -423,7 +423,7 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
     Column(
         modifier = Modifier
             .width(64.dp)
-            .height(260.dp)
+            .height(230.dp)
             .clip(RoundedCornerShape(32.dp))
             .background(ButtonBg),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -432,7 +432,7 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(90.dp)
+                .height(78.dp)
                 .clickable { onPlus() },
             contentAlignment = Alignment.Center
         ) {
@@ -442,7 +442,7 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(90.dp)
+                .height(78.dp)
                 .clickable { onMinus() },
             contentAlignment = Alignment.Center
         ) {
