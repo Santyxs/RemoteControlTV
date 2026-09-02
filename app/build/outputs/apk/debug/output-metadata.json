@@ -3,7 +3,7 @@
   "artifactType": {
     "type": "APK",
     "kind": "Directory"
-  },
+  }, 
   "applicationId": "pwf.xenova.tvremote",
   "variantName": "debug",
   "elements": [
