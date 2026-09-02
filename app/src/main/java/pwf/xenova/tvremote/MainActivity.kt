@@ -423,7 +423,7 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
     Column(
         modifier = Modifier
             .width(64.dp)
-            .height(190.dp)
+            .height(260.dp)
             .clip(RoundedCornerShape(32.dp))
             .background(ButtonBg),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -432,7 +432,7 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(63.dp)
+                .height(90.dp)
                 .clickable { onPlus() },
             contentAlignment = Alignment.Center
         ) {
@@ -442,7 +442,7 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(63.dp)
+                .height(90.dp)
                 .clickable { onMinus() },
             contentAlignment = Alignment.Center
         ) {
