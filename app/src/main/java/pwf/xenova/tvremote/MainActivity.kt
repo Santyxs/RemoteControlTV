@@ -275,7 +275,7 @@ fun OutlinedTextPill(text: String, onClick: () -> Unit) {
 fun RoundLabelButton(text: String, onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .size(60.dp)
+            .size(66.dp)
             .clip(CircleShape)
             .background(ButtonBg)
             .clickable { onClick() },
@@ -289,7 +289,7 @@ fun RoundLabelButton(text: String, onClick: () -> Unit) {
 fun RoundIconButton(icon: ImageVector, onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .size(72.dp)
+            .size(66.dp)
             .clip(CircleShape)
             .background(ButtonBg)
             .clickable { onClick() },
@@ -317,9 +317,9 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
             val h = size.height
             val cx = w / 2f
             val cy = h / 2f
-            val armW = w * 0.34f
+            val armW = w * 0.40f
             val half = armW / 2f
-            val outer = w * 0.44f
+            val outer = w * 0.53f
             val cornerRadius = androidx.compose.ui.geometry.CornerRadius(half * 0.6f, half * 0.6f)
 
             val verticalBar = Path().apply {
@@ -346,7 +346,7 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
             drawPath(
                 path = crossPath,
                 brush = gradientBrush,
-                style = Stroke(width = half * 0.28f)
+                style = Stroke(width = half * 0.42f)
             )
         }
 
@@ -357,28 +357,28 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
                 icon = Icons.Filled.KeyboardArrowUp,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(y = (-74).dp)
+                    .offset(y = (-72).dp)
             ) { onAction(RemoteAction.UP) }
 
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowDown,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(y = 74.dp)
+                    .offset(y = 72.dp)
             ) { onAction(RemoteAction.DOWN) }
 
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowLeft,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(x = (-74).dp)
+                    .offset(x = (-72).dp)
             ) { onAction(RemoteAction.LEFT) }
 
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowRight,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(x = 74.dp)
+                    .offset(x = 72.dp)
             ) { onAction(RemoteAction.RIGHT) }
 
             // OK central
