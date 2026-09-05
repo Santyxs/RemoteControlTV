@@ -1,0 +1,15 @@
+# Gradle / build outputs (se regeneran solos, no deben versionarse)
+/build/
+/app/build/
+.gradle/
+
+# Config local de cada máquina (rutas del SDK, distintas por PC)
+local.properties
+
+# Android Studio / IDE
+.idea/
+*.iml
+.DS_Store
+
+# Logs
+*.log
