@@ -206,7 +206,7 @@ fun NumberKey(label: String, onClick: () -> Unit) {
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Text(label, color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        Text(label, color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
     }
 }
 
@@ -276,7 +276,7 @@ fun OutlinedTextPill(text: String, onClick: () -> Unit) {
             .padding(horizontal = 18.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text, color = TextPrimary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+        Text(text, color = TextPrimary, fontSize = 13.sp, fontWeight = FontWeight.ExtraBold)
     }
 }
 
@@ -290,7 +290,7 @@ fun RoundLabelButton(text: String, onClick: () -> Unit) {
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Text(text, color = TextSecondary, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+        Text(text, color = TextPrimary, fontSize = 11.sp, fontWeight = FontWeight.ExtraBold)
     }
 }
 
@@ -447,9 +447,9 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
                 .clickable { onPlus() },
             contentAlignment = Alignment.Center
         ) {
-            Text("+", color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text("+", color = TextPrimary, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
         }
-        Text(label, color = TextSecondary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+        Text(label, color = TextPrimary, fontSize = 13.sp, fontWeight = FontWeight.ExtraBold)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -457,7 +457,7 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
                 .clickable { onMinus() },
             contentAlignment = Alignment.Center
         ) {
-            Text("–", color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text("–", color = TextPrimary, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
         }
     }
 }
