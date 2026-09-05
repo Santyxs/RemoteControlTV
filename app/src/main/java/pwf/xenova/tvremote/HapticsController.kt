@@ -32,26 +32,24 @@ class HapticsController(context: Context) {
     }
 
     /**
-     * Dispara una vibración corta y fuerte al pulsar un botón. En API 29+ usa el
-     * efecto predefinido EFFECT_HEAVY_CLICK, calibrado por el fabricante para
-     * sentirse fuerte (más perceptible que un pulso genérico). En versiones más
-     * viejas cae a un pulso largo con amplitud máxima explícita (255), que no
-     * depende de la intensidad háptica configurada en el sistema.
+     * Dispara una vibración de feedback al pulsar un botón: un doble pulso rápido
+     * a amplitud máxima (255), que se percibe más que un pulso único aunque dure
+     * lo mismo en total — útil en teléfonos con motores hápticos suaves. No
+     * depende de la intensidad configurada en el sistema.
      */
     fun vibrate() {
         if (!enabled) return
         val v = vibrator ?: return
         if (!v.hasVibrator()) return
 
-        when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q ->
-                v.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK))
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ->
-                v.vibrate(VibrationEffect.createOneShot(70, 255))
-            else -> {
-                @Suppress("DEPRECATION")
-                v.vibrate(70)
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // timings: espera 0, vibra 40, pausa 30, vibra 40
+            val timings = longArrayOf(0, 40, 30, 40)
+            val amplitudes = intArrayOf(0, 255, 0, 255)
+            v.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1))
+        } else {
+            @Suppress("DEPRECATION")
+            v.vibrate(longArrayOf(0, 40, 30, 40), -1)
         }
     }
 
