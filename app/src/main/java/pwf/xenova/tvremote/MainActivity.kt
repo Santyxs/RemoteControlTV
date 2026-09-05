@@ -8,6 +8,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,26 +20,35 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import pwf.xenova.tvremote.ui.theme.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val irController = IrRemoteController(this)
+        val hapticsController = HapticsController(this)
 
         setContent {
             MaterialTheme(colorScheme = darkColorScheme()) {
                 RemoteScreen(
                     irController = irController,
+                    hapticsController = hapticsController,
                     onAction = { action ->
+                        hapticsController.vibrate()
                         val sent = irController.send(action)
                         if (!sent) {
                             Toast.makeText(
@@ -56,9 +68,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun RemoteScreen(irController: IrRemoteController, onAction: (RemoteAction) -> Unit) {
+fun RemoteScreen(
+    irController: IrRemoteController,
+    hapticsController: HapticsController,
+    onAction: (RemoteAction) -> Unit
+) {
     var selectedTab by remember { mutableStateOf(0) }
     var brand by remember { mutableStateOf(irController.brand) }
+    var hapticsEnabled by remember { mutableStateOf(hapticsController.enabled) }
 
     Scaffold(
         containerColor = BgBottom,
@@ -75,7 +92,12 @@ fun RemoteScreen(irController: IrRemoteController, onAction: (RemoteAction) -> U
             when (selectedTab) {
                 0 -> RemoteTabContent(onAction)
                 1 -> ControlTabContent(onAction)
-                else -> SettingsTabContent(brand) { brand = it; irController.brand = it }
+                else -> SettingsTabContent(
+                    brand = brand,
+                    onBrandChange = { brand = it; irController.brand = it },
+                    hapticsEnabled = hapticsEnabled,
+                    onHapticsChange = { hapticsEnabled = it; hapticsController.enabled = it }
+                )
             }
         }
     }
@@ -202,7 +224,12 @@ fun NumberKey(label: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun SettingsTabContent(brand: TvBrand, onBrandChange: (TvBrand) -> Unit) {
+fun SettingsTabContent(
+    brand: TvBrand,
+    onBrandChange: (TvBrand) -> Unit,
+    hapticsEnabled: Boolean,
+    onHapticsChange: (Boolean) -> Unit
+) {
     Spacer(Modifier.height(32.dp))
 
     Text("Ajustes", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.Bold)
@@ -220,6 +247,25 @@ fun SettingsTabContent(brand: TvBrand, onBrandChange: (TvBrand) -> Unit) {
     ) {
         Text("Marca de televisión", color = TextPrimary, fontSize = 15.sp)
         BrandSelector(brand, onBrandChange)
+    }
+
+    Spacer(Modifier.height(16.dp))
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(ButtonBg)
+            .padding(horizontal = 18.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text("Vibración al pulsar", color = TextPrimary, fontSize = 15.sp)
+        Switch(
+            checked = hapticsEnabled,
+            onCheckedChange = onHapticsChange,
+            colors = SwitchDefaults.colors(checkedTrackColor = AccentBlue)
+        )
     }
 }
 
@@ -435,7 +481,7 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(68.dp)
-                .clickable { onPlus() },
+                .repeatingPress { onPlus() },
             contentAlignment = Alignment.Center
         ) {
             Text("+", color = TextPrimary, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
@@ -445,10 +491,39 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(68.dp)
-                .clickable { onMinus() },
+                .repeatingPress { onMinus() },
             contentAlignment = Alignment.Center
         ) {
             Text("–", color = TextPrimary, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+        }
+    }
+}
+
+/**
+ * Modifier que dispara [onAction] al pulsar, y sigue repitiendo mientras el dedo
+ * se mantenga presionado (como los botones de VOL/CH de un mando físico).
+ */
+fun Modifier.repeatingPress(
+    initialDelayMillis: Long = 400,
+    repeatMillis: Long = 100,
+    onAction: () -> Unit
+): Modifier = composed {
+    val currentAction by rememberUpdatedState(onAction)
+    pointerInput(Unit) {
+        awaitEachGesture {
+            awaitFirstDown(requireUnconsumed = false)
+            currentAction()
+            coroutineScope {
+                val job = launch {
+                    delay(initialDelayMillis)
+                    while (isActive) {
+                        currentAction()
+                        delay(repeatMillis)
+                    }
+                }
+                waitForUpOrCancellation()
+                job.cancel()
+            }
         }
     }
 }
