@@ -317,7 +317,7 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
             val h = size.height
             val cx = w / 2f
             val cy = h / 2f
-            val armW = w * 0.40f
+            val armW = w * 0.36f
             val half = armW / 2f
             val outer = w * 0.53f
             val cornerRadius = androidx.compose.ui.geometry.CornerRadius(half * 0.6f, half * 0.6f)
@@ -346,7 +346,7 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
             drawPath(
                 path = crossPath,
                 brush = gradientBrush,
-                style = Stroke(width = half * 0.42f)
+                style = Stroke(width = half * 0.30f)
             )
         }
 
@@ -357,28 +357,28 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
                 icon = Icons.Filled.KeyboardArrowUp,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(y = (-72).dp)
+                    .offset(y = (-80).dp)
             ) { onAction(RemoteAction.UP) }
 
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowDown,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(y = 72.dp)
+                    .offset(y = 80.dp)
             ) { onAction(RemoteAction.DOWN) }
 
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowLeft,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(x = (-72).dp)
+                    .offset(x = (-80).dp)
             ) { onAction(RemoteAction.LEFT) }
 
             RoundIconButtonSmall(
                 icon = Icons.Filled.KeyboardArrowRight,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .offset(x = 72.dp)
+                    .offset(x = 80.dp)
             ) { onAction(RemoteAction.RIGHT) }
 
             // OK central
