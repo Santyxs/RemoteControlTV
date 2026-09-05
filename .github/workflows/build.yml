@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -25,7 +27,32 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build debug APK
-        run: ./gradlew assembleDebug --no-daemon
+        run: |
+          set -o pipefail
+          ./gradlew assembleDebug --no-daemon 2>&1 | tee build.log
+
+      - name: Post build log on failure
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - <<'EOF'
+import json, os, urllib.request
+
+log = open("build.log", "r", errors="replace").read()
+log = log[-60000:]
+
+repo = os.environ["GITHUB_REPOSITORY"]
+sha = os.environ["GITHUB_SHA"]
+token = os.environ["GITHUB_TOKEN"]
+
+url = f"https://api.github.com/repos/{repo}/commits/{sha}/comments"
+data = json.dumps({"body": "```\n" + log + "\n```"}).encode()
+req = urllib.request.Request(url, data=data, method="POST")
+req.add_header("Authorization", f"token {token}")
+req.add_header("Accept", "application/vnd.github+json")
+urllib.request.urlopen(req)
+EOF
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
