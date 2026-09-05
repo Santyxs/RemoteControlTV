@@ -16,6 +16,15 @@ android {
         buildConfigField("String", "BUILD_NUMBER", "\"${System.getenv("GITHUB_RUN_NUMBER") ?: "0"}\"")
     }
 
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
