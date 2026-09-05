@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.widget.Toast
 
 /**
  * Controla la vibración al pulsar botones. El usuario puede activarla/desactivarla
@@ -33,9 +34,19 @@ class HapticsController(context: Context) {
 
     /** Dispara una vibración corta de feedback si está habilitada y hay hardware. */
     fun vibrate() {
-        if (!enabled) return
-        val v = vibrator ?: return
-        if (!v.hasVibrator()) return
+        if (!enabled) {
+            Toast.makeText(appContext, "DEBUG: vibración desactivada en Ajustes", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val v = vibrator
+        if (v == null) {
+            Toast.makeText(appContext, "DEBUG: no se encontró servicio Vibrator", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (!v.hasVibrator()) {
+            Toast.makeText(appContext, "DEBUG: el dispositivo reporta que no tiene motor de vibración", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             v.vibrate(VibrationEffect.createOneShot(35, VibrationEffect.DEFAULT_AMPLITUDE))
@@ -43,6 +54,7 @@ class HapticsController(context: Context) {
             @Suppress("DEPRECATION")
             v.vibrate(35)
         }
+        Toast.makeText(appContext, "DEBUG: vibrate() ejecutado", Toast.LENGTH_SHORT).show()
     }
 
     companion object {
