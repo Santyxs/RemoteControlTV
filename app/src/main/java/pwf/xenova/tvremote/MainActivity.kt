@@ -83,8 +83,6 @@ fun RemoteScreen(irController: IrRemoteController, onAction: (RemoteAction) -> U
 
 @Composable
 fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
-    var isTvOn by remember { mutableStateOf(false) }
-
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 6.dp, bottom = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -95,14 +93,7 @@ fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            OutlinedIconPill(
-                icon = Icons.Filled.PowerSettingsNew,
-                label = null,
-                tint = if (isTvOn) PowerGreen else TextPrimary
-            ) {
-                isTvOn = !isTvOn
-                onAction(RemoteAction.POWER)
-            }
+            OutlinedIconPill(Icons.Filled.PowerSettingsNew, null) { onAction(RemoteAction.POWER) }
             OutlinedTextPill("GUIDE") { onAction(RemoteAction.GUIDE) }
             OutlinedTextPill("HDMI") { onAction(RemoteAction.HDMI) }
             OutlinedIconPill(Icons.Filled.Home, null) { onAction(RemoteAction.HOME) }

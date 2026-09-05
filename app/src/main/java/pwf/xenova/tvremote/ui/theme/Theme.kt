@@ -9,7 +9,6 @@ val ButtonBgLight = Color(0xFF33333F)
 val TextPrimary = Color(0xFFEDEDF2)
 val TextSecondary = Color(0xFFB8B8C4)
 val AccentBlue = Color(0xFF5B8CFF)
-val PowerGreen = Color(0xFF4CD964)
 
 val GradientPink = Color(0xFFE8447A)
 val GradientPurple = Color(0xFF9B4DE0)
