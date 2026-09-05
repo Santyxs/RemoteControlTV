@@ -180,7 +180,7 @@ fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
 fun ControlTabContent(onAction: (RemoteAction) -> Unit) {
     Spacer(Modifier.height(32.dp))
 
-    Text("Canal", color = TextSecondary, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+    Text("Canal", color = TextSecondary, fontSize = 17.sp, fontWeight = FontWeight.Bold)
 
     Spacer(Modifier.height(20.dp))
 
