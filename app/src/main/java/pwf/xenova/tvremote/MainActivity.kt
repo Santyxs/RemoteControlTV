@@ -83,6 +83,8 @@ fun RemoteScreen(irController: IrRemoteController, onAction: (RemoteAction) -> U
 
 @Composable
 fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
+    var isTvOn by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 6.dp, bottom = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -93,7 +95,14 @@ fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            OutlinedIconPill(Icons.Filled.PowerSettingsNew, null) { onAction(RemoteAction.POWER) }
+            OutlinedIconPill(
+                icon = Icons.Filled.PowerSettingsNew,
+                label = null,
+                tint = if (isTvOn) PowerGreen else TextPrimary
+            ) {
+                isTvOn = !isTvOn
+                onAction(RemoteAction.POWER)
+            }
             OutlinedTextPill("GUIDE") { onAction(RemoteAction.GUIDE) }
             OutlinedTextPill("HDMI") { onAction(RemoteAction.HDMI) }
             OutlinedIconPill(Icons.Filled.Home, null) { onAction(RemoteAction.HOME) }
@@ -197,7 +206,7 @@ fun NumberKey(label: String, onClick: () -> Unit) {
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Text(label, color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Medium)
+        Text(label, color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
     }
 }
 
@@ -242,7 +251,7 @@ fun BrandSelector(current: TvBrand, onSelected: (TvBrand) -> Unit) {
 }
 
 @Composable
-fun OutlinedIconPill(icon: ImageVector, label: String?, onClick: () -> Unit) {
+fun OutlinedIconPill(icon: ImageVector, label: String?, tint: Color = TextPrimary, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .size(64.dp, 48.dp)
@@ -252,7 +261,7 @@ fun OutlinedIconPill(icon: ImageVector, label: String?, onClick: () -> Unit) {
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Icon(imageVector = icon, contentDescription = null, tint = TextPrimary)
+        Icon(imageVector = icon, contentDescription = null, tint = tint)
     }
 }
 
@@ -267,7 +276,7 @@ fun OutlinedTextPill(text: String, onClick: () -> Unit) {
             .padding(horizontal = 18.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text, color = TextPrimary, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+        Text(text, color = TextPrimary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
     }
 }
 
@@ -281,7 +290,7 @@ fun RoundLabelButton(text: String, onClick: () -> Unit) {
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Text(text, color = TextSecondary, fontSize = 11.sp, fontWeight = FontWeight.Medium)
+        Text(text, color = TextSecondary, fontSize = 11.sp, fontWeight = FontWeight.Bold)
     }
 }
 
@@ -438,9 +447,9 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
                 .clickable { onPlus() },
             contentAlignment = Alignment.Center
         ) {
-            Text("+", color = TextPrimary, fontSize = 22.sp)
+            Text("+", color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
         }
-        Text(label, color = TextSecondary, fontSize = 13.sp, fontWeight = FontWeight.Medium)
+        Text(label, color = TextSecondary, fontSize = 13.sp, fontWeight = FontWeight.Bold)
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -448,7 +457,7 @@ fun VerticalRockerPill(label: String, onPlus: () -> Unit, onMinus: () -> Unit) {
                 .clickable { onMinus() },
             contentAlignment = Alignment.Center
         ) {
-            Text("–", color = TextPrimary, fontSize = 22.sp)
+            Text("–", color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
