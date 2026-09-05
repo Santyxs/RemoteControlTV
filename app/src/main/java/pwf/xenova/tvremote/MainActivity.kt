@@ -1,7 +1,5 @@
 package pwf.xenova.tvremote
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -285,6 +283,7 @@ fun UpdateSection() {
     var status by remember { mutableStateOf<String?>(null) }
     var checking by remember { mutableStateOf(false) }
     var downloadUrl by remember { mutableStateOf<String?>(null) }
+    var downloadState by remember { mutableStateOf<DownloadState>(DownloadState.Idle) }
 
     Column(
         modifier = Modifier
@@ -300,18 +299,37 @@ fun UpdateSection() {
         ) {
             Text("Actualizaciones", color = TextPrimary, fontSize = 15.sp)
 
+            val isDownloading = downloadState is DownloadState.Downloading
+
             if (downloadUrl != null) {
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
-                        .background(AccentBlue)
-                        .clickable {
+                        .background(if (isDownloading) ButtonBgLight else AccentBlue)
+                        .clickable(enabled = !isDownloading) {
                             val url = downloadUrl!!
-                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                            downloadState = DownloadState.Downloading(0)
+                            scope.launch {
+                                withContext(Dispatchers.IO) {
+                                    ApkDownloader.downloadApk(context, url) { state ->
+                                        downloadState = state
+                                    }
+                                }
+                                val finalState = downloadState
+                                if (finalState is DownloadState.Done) {
+                                    ApkDownloader.installApk(context, finalState.file)
+                                } else if (finalState is DownloadState.Failed) {
+                                    status = "Error al descargar: ${finalState.message}"
+                                }
+                            }
                         }
                         .padding(horizontal = 14.dp, vertical = 8.dp)
                 ) {
-                    Text("Descargar", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    val label = when (val s = downloadState) {
+                        is DownloadState.Downloading -> "Descargando ${s.progress}%"
+                        else -> "Descargar e instalar"
+                    }
+                    Text(label, color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
                 }
             } else {
                 Box(
