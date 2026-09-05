@@ -59,3 +59,14 @@ jobs:
         with:
           name: app-debug
           path: app/build/outputs/apk/debug/*.apk
+
+      - name: Publish GitHub Release with APK (para el chequeo de actualizaciones in-app)
+        if: success() && github.event_name == 'push'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/tvremote-v${{ github.run_number }}.apk
+          gh release create "v${{ github.run_number }}" \
+            "app/build/outputs/apk/debug/tvremote-v${{ github.run_number }}.apk" \
+            --title "Build ${{ github.run_number }}" \
+            --notes "Compilación automática desde ${{ github.sha }}"

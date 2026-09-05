@@ -1,5 +1,7 @@
 package pwf.xenova.tvremote
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -27,13 +29,16 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import pwf.xenova.tvremote.ui.theme.*
 
 class MainActivity : ComponentActivity() {
@@ -266,6 +271,91 @@ fun SettingsTabContent(
             onCheckedChange = onHapticsChange,
             colors = SwitchDefaults.colors(checkedTrackColor = AccentBlue)
         )
+    }
+
+    Spacer(Modifier.height(16.dp))
+
+    UpdateSection()
+}
+
+@Composable
+fun UpdateSection() {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var status by remember { mutableStateOf<String?>(null) }
+    var checking by remember { mutableStateOf(false) }
+    var downloadUrl by remember { mutableStateOf<String?>(null) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(ButtonBg)
+            .padding(horizontal = 18.dp, vertical = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Actualizaciones", color = TextPrimary, fontSize = 15.sp)
+
+            if (downloadUrl != null) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(AccentBlue)
+                        .clickable {
+                            val url = downloadUrl!!
+                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                        }
+                        .padding(horizontal = 14.dp, vertical = 8.dp)
+                ) {
+                    Text("Descargar", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(if (checking) ButtonBgLight else AccentBlue)
+                        .clickable(enabled = !checking) {
+                            checking = true
+                            status = null
+                            scope.launch {
+                                val result = withContext(Dispatchers.IO) {
+                                    UpdateChecker.checkForUpdate(
+                                        BuildConfig.BUILD_NUMBER.toIntOrNull() ?: 0
+                                    )
+                                }
+                                checking = false
+                                when (result) {
+                                    is UpdateCheckResult.UpdateAvailable -> {
+                                        status = "Hay una versión nueva disponible"
+                                        downloadUrl = result.downloadUrl
+                                    }
+                                    is UpdateCheckResult.UpToDate ->
+                                        status = "Ya tienes la última versión"
+                                    is UpdateCheckResult.Error ->
+                                        status = "Error: ${result.message}"
+                                }
+                            }
+                        }
+                        .padding(horizontal = 14.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        if (checking) "Buscando…" else "Buscar actualización",
+                        color = Color.White,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+
+        if (status != null) {
+            Spacer(Modifier.height(10.dp))
+            Text(status!!, color = TextSecondary, fontSize = 12.sp)
+        }
     }
 }
 
