@@ -510,10 +510,10 @@ fun Modifier.repeatingPress(
 ): Modifier = composed {
     val currentAction by rememberUpdatedState(onAction)
     pointerInput(Unit) {
-        awaitEachGesture {
-            awaitFirstDown(requireUnconsumed = false)
-            currentAction()
-            coroutineScope {
+        coroutineScope {
+            awaitEachGesture {
+                awaitFirstDown(requireUnconsumed = false)
+                currentAction()
                 val job = launch {
                     delay(initialDelayMillis)
                     while (isActive) {
