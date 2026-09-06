@@ -152,12 +152,12 @@ fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
             OutlinedIconPill(Icons.Filled.Home, null) { onAction(RemoteAction.HOME) }
         }
 
-        // TOOLS debajo de POWER, INFO debajo de HOME
+        // CH.LIST debajo de POWER, INFO debajo de HOME
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            RoundLabelButton("TOOLS") { onAction(RemoteAction.TOOLS) }
+            RoundLabelButton("Ch.List", fontSize = 9.5.sp) { onAction(RemoteAction.CH_LIST) }
             RoundLabelButton("INFO") { onAction(RemoteAction.INFO) }
         }
 
@@ -458,7 +458,7 @@ fun OutlinedTextPill(text: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun RoundLabelButton(text: String, onClick: () -> Unit) {
+fun RoundLabelButton(text: String, fontSize: androidx.compose.ui.unit.TextUnit = 11.sp, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .size(66.dp)
@@ -468,7 +468,7 @@ fun RoundLabelButton(text: String, onClick: () -> Unit) {
             .pressableScale { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Text(text, color = TextPrimary, fontSize = 11.sp, fontWeight = FontWeight.ExtraBold)
+        Text(text, color = TextPrimary, fontSize = fontSize, fontWeight = FontWeight.ExtraBold)
     }
 }
 
