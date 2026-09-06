@@ -34,12 +34,22 @@ enum class TvBrand(val displayName: String) {
  */
 class IrRemoteController(context: Context) {
 
-    private val irManager: ConsumerIrManager? =
+    private val irManager: ConsumerIrManager? = try {
         context.getSystemService(Context.CONSUMER_IR_SERVICE) as? ConsumerIrManager
+    } catch (e: Exception) {
+        null
+    }
 
-    /** true si el hardware existe y está disponible en este teléfono */
+    /** true si el hardware existe y está disponible en este teléfono.
+     * Algunos ROMs (ej. MIUI/HyperOS en teléfonos sin emisor IR real) exponen
+     * el servicio pero lanzan una excepción al consultarlo o usarlo — de ahí
+     * el try/catch, para no tumbar la app en esos casos. */
     val isIrAvailable: Boolean
-        get() = irManager?.hasIrEmitter() == true
+        get() = try {
+            irManager?.hasIrEmitter() == true
+        } catch (e: Exception) {
+            false
+        }
 
     var brand: TvBrand = TvBrand.SAMSUNG
 
@@ -247,19 +257,26 @@ class IrRemoteController(context: Context) {
     )
 
     /**
-     * Envía una acción por IR. Devuelve false si no hay hardware o no existe
-     * código para esa acción en la marca seleccionada.
+     * Envía una acción por IR. Devuelve false si no hay hardware, si no existe
+     * código para esa acción en la marca seleccionada, o si el ROM del teléfono
+     * lanza una excepción al intentar transmitir (pasa en algunos teléfonos sin
+     * emisor IR real, ej. MIUI/HyperOS) — nunca deja que un error de hardware
+     * cierre la app.
      */
     fun send(action: RemoteAction): Boolean {
-        val manager = irManager ?: return false
-        if (!manager.hasIrEmitter()) return false
+        return try {
+            val manager = irManager ?: return false
+            if (!manager.hasIrEmitter()) return false
 
-        val pair = codeTable[brand]?.get(action) ?: codeTable[TvBrand.GENERIC_NEC]?.get(action)
-            ?: return false
+            val pair = codeTable[brand]?.get(action) ?: codeTable[TvBrand.GENERIC_NEC]?.get(action)
+                ?: return false
 
-        val pattern = buildNecPattern(pair.first, pair.second)
-        manager.transmit(carrierFrequency, pattern)
-        return true
+            val pattern = buildNecPattern(pair.first, pair.second)
+            manager.transmit(carrierFrequency, pattern)
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     /**
