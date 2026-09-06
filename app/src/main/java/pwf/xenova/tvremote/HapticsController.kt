@@ -22,12 +22,16 @@ class HapticsController(context: Context) {
         }
 
     private val vibrator: Vibrator? by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val manager = appContext.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
-            manager?.defaultVibrator
-        } else {
-            @Suppress("DEPRECATION")
-            appContext.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val manager = appContext.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+                manager?.defaultVibrator
+            } else {
+                @Suppress("DEPRECATION")
+                appContext.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 
@@ -36,20 +40,28 @@ class HapticsController(context: Context) {
      * a amplitud máxima (255), que se percibe más que un pulso único aunque dure
      * lo mismo en total — útil en teléfonos con motores hápticos suaves. No
      * depende de la intensidad configurada en el sistema.
+     *
+     * Todo envuelto en try/catch: algunos ROMs (ej. HyperOS) pueden lanzar
+     * excepciones inesperadas al usar el motor de vibración, y esto nunca debe
+     * tumbar la app.
      */
     fun vibrate() {
-        if (!enabled) return
-        val v = vibrator ?: return
-        if (!v.hasVibrator()) return
+        try {
+            if (!enabled) return
+            val v = vibrator ?: return
+            if (!v.hasVibrator()) return
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // timings: espera 0, vibra 40, pausa 30, vibra 40
-            val timings = longArrayOf(0, 40, 30, 40)
-            val amplitudes = intArrayOf(0, 255, 0, 255)
-            v.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1))
-        } else {
-            @Suppress("DEPRECATION")
-            v.vibrate(longArrayOf(0, 40, 30, 40), -1)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // timings: espera 0, vibra 40, pausa 30, vibra 40
+                val timings = longArrayOf(0, 40, 30, 40)
+                val amplitudes = intArrayOf(0, 255, 0, 255)
+                v.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1))
+            } else {
+                @Suppress("DEPRECATION")
+                v.vibrate(longArrayOf(0, 40, 30, 40), -1)
+            }
+        } catch (e: Exception) {
+            // Ignorar: la vibración es un extra, nunca debe romper la app
         }
     }
 

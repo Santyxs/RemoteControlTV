@@ -51,15 +51,25 @@ class MainActivity : ComponentActivity() {
                     irController = irController,
                     hapticsController = hapticsController,
                     onAction = { action ->
-                        hapticsController.vibrate()
-                        val sent = irController.send(action)
-                        if (!sent) {
+                        try {
+                            hapticsController.vibrate()
+                            val sent = irController.send(action)
+                            if (!sent) {
+                                Toast.makeText(
+                                    this,
+                                    if (!irController.isIrAvailable)
+                                        "Este teléfono no tiene emisor infrarrojo"
+                                    else
+                                        "Código no disponible para esta marca",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } catch (e: Exception) {
+                            // Ultima red de seguridad: cualquier fallo inesperado al procesar
+                            // una pulsación (vibracion, IR, lo que sea) nunca debe cerrar la app
                             Toast.makeText(
                                 this,
-                                if (!irController.isIrAvailable)
-                                    "Este teléfono no tiene emisor infrarrojo"
-                                else
-                                    "Código no disponible para esta marca",
+                                "No se pudo enviar la señal (error inesperado)",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
