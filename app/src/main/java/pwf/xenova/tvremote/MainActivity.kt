@@ -44,12 +44,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val irController = IrRemoteController(this)
         val hapticsController = HapticsController(this)
+        val debugError = mutableStateOf<String?>(null)
 
         setContent {
             MaterialTheme(colorScheme = darkColorScheme()) {
                 RemoteScreen(
                     irController = irController,
                     hapticsController = hapticsController,
+                    debugError = debugError,
                     onAction = { action ->
                         try {
                             hapticsController.vibrate()
@@ -61,18 +63,12 @@ class MainActivity : ComponentActivity() {
                                 is SendResult.NoCode -> Toast.makeText(
                                     this, "Código no disponible para esta marca", Toast.LENGTH_SHORT
                                 ).show()
-                                is SendResult.Exception -> Toast.makeText(
-                                    this, "DEBUG: ${result.message}", Toast.LENGTH_LONG
-                                ).show()
+                                is SendResult.Exception -> debugError.value = result.message
                             }
                         } catch (e: Exception) {
                             // Ultima red de seguridad: cualquier fallo inesperado al procesar
                             // una pulsación (vibracion, IR, lo que sea) nunca debe cerrar la app
-                            Toast.makeText(
-                                this,
-                                "No se pudo enviar la señal (error inesperado)",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            debugError.value = e.javaClass.simpleName + ": " + (e.message ?: "sin mensaje")
                         }
                     }
                 )
@@ -85,11 +81,23 @@ class MainActivity : ComponentActivity() {
 fun RemoteScreen(
     irController: IrRemoteController,
     hapticsController: HapticsController,
+    debugError: MutableState<String?>,
     onAction: (RemoteAction) -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(0) }
     var brand by remember { mutableStateOf(irController.brand) }
     var hapticsEnabled by remember { mutableStateOf(hapticsController.enabled) }
+
+    if (debugError.value != null) {
+        AlertDialog(
+            onDismissRequest = { debugError.value = null },
+            title = { Text("Error al enviar (debug)") },
+            text = { Text(debugError.value ?: "") },
+            confirmButton = {
+                TextButton(onClick = { debugError.value = null }) { Text("Cerrar") }
+            }
+        )
+    }
 
     Scaffold(
         containerColor = BgBottom,
