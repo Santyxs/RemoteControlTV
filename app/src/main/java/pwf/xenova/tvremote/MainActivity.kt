@@ -53,15 +53,16 @@ class MainActivity : ComponentActivity() {
                     onAction = { action ->
                         try {
                             hapticsController.vibrate()
-                            val sent = irController.send(action)
-                            if (!sent) {
-                                Toast.makeText(
-                                    this,
-                                    if (!irController.isIrAvailable)
-                                        "Este teléfono no tiene emisor infrarrojo"
-                                    else
-                                        "Código no disponible para esta marca",
-                                    Toast.LENGTH_SHORT
+                            when (val result = irController.send(action)) {
+                                is SendResult.Success -> {}
+                                is SendResult.NoHardware -> Toast.makeText(
+                                    this, "Este teléfono no tiene emisor infrarrojo", Toast.LENGTH_SHORT
+                                ).show()
+                                is SendResult.NoCode -> Toast.makeText(
+                                    this, "Código no disponible para esta marca", Toast.LENGTH_SHORT
+                                ).show()
+                                is SendResult.Exception -> Toast.makeText(
+                                    this, "DEBUG: ${result.message}", Toast.LENGTH_LONG
                                 ).show()
                             }
                         } catch (e: Exception) {
