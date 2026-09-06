@@ -361,7 +361,7 @@ fun UpdateSection() {
                         .padding(horizontal = 14.dp, vertical = 8.dp)
                 ) {
                     Text(
-                        if (checking) "Buscando…" else "Buscar actualización",
+                        if (checking) "Buscando…" else "Buscar",
                         color = Color.White,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold
@@ -460,7 +460,7 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
     )
 
     Box(
-        modifier = Modifier.size(220.dp),
+        modifier = Modifier.size(226.dp),
         contentAlignment = Alignment.Center
     ) {
         // Contorno gradiente en forma de cruz con esquinas redondeadas:
@@ -473,7 +473,7 @@ fun DPad(onAction: (RemoteAction) -> Unit) {
             val cy = h / 2f
             val armW = w * 0.36f
             val half = armW / 2f
-            val outer = w * 0.53f
+            val outer = w * 0.56f
             val cornerRadius = androidx.compose.ui.geometry.CornerRadius(half * 0.6f, half * 0.6f)
 
             val verticalBar = Path().apply {
