@@ -30,6 +30,16 @@ enum class TvBrand(val displayName: String) {
 }
 
 /**
+ * Resultado de intentar enviar una acción por IR.
+ */
+sealed class SendResult {
+    object Success : SendResult()
+    object NoHardware : SendResult()
+    object NoCode : SendResult()
+    data class Exception(val message: String) : SendResult()
+}
+
+/**
  * Envuelve ConsumerIrManager y traduce RemoteAction -> pulsos IR (protocolo NEC).
  */
 class IrRemoteController(context: Context) {
@@ -257,25 +267,28 @@ class IrRemoteController(context: Context) {
     )
 
     /**
-     * Envía una acción por IR. Devuelve false si no hay hardware, si no existe
-     * código para esa acción en la marca seleccionada, o si el ROM del teléfono
-     * lanza una excepción al intentar transmitir (pasa en algunos teléfonos sin
-     * emisor IR real, ej. MIUI/HyperOS) — nunca deja que un error de hardware
-     * cierre la app.
+     * Envía una acción por IR. Devuelve un resultado que distingue "no hay
+     * hardware", "no hay código para esta acción" y "el ROM lanzó una excepción
+     * al transmitir" — para poder diagnosticar en vez de tragarse el error.
      */
-    fun send(action: RemoteAction): Boolean {
+    fun send(action: RemoteAction): SendResult {
+        val manager = irManager ?: return SendResult.NoHardware
+        val hasEmitter = try {
+            manager.hasIrEmitter()
+        } catch (e: Exception) {
+            return SendResult.Exception(e.javaClass.simpleName + ": " + (e.message ?: "sin mensaje"))
+        }
+        if (!hasEmitter) return SendResult.NoHardware
+
+        val pair = codeTable[brand]?.get(action) ?: codeTable[TvBrand.GENERIC_NEC]?.get(action)
+            ?: return SendResult.NoCode
+
         return try {
-            val manager = irManager ?: return false
-            if (!manager.hasIrEmitter()) return false
-
-            val pair = codeTable[brand]?.get(action) ?: codeTable[TvBrand.GENERIC_NEC]?.get(action)
-                ?: return false
-
             val pattern = buildNecPattern(pair.first, pair.second)
             manager.transmit(carrierFrequency, pattern)
-            true
+            SendResult.Success
         } catch (e: Exception) {
-            false
+            SendResult.Exception(e.javaClass.simpleName + ": " + (e.message ?: "sin mensaje"))
         }
     }
 
