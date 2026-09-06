@@ -157,7 +157,7 @@ fun RemoteTabContent(onAction: (RemoteAction) -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            RoundLabelButton("Ch.List", fontSize = 9.5.sp) { onAction(RemoteAction.CH_LIST) }
+            RoundLabelButton("CH LIST", fontSize = 9.5.sp) { onAction(RemoteAction.CH_LIST) }
             RoundLabelButton("INFO") { onAction(RemoteAction.INFO) }
         }
 
