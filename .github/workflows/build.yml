@@ -26,10 +26,10 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build debug APK
+      - name: Build release APK
         run: |
           set -o pipefail
-          ./gradlew assembleDebug --no-daemon 2>&1 | tee build.log
+          ./gradlew assembleRelease --no-daemon 2>&1 | tee build.log
 
       - name: Post build log on failure
         if: failure()
@@ -57,16 +57,16 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
-          path: app/build/outputs/apk/debug/*.apk
+          name: app-release
+          path: app/build/outputs/apk/release/*.apk
 
       - name: Publish GitHub Release with APK (para el chequeo de actualizaciones in-app)
         if: success() && github.event_name == 'push'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mv app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/tvremote-v${{ github.run_number }}.apk
+          mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/tvremote-v${{ github.run_number }}.apk
           gh release create "v${{ github.run_number }}" \
-            "app/build/outputs/apk/debug/tvremote-v${{ github.run_number }}.apk" \
+            "app/build/outputs/apk/release/tvremote-v${{ github.run_number }}.apk" \
             --title "Build ${{ github.run_number }}" \
             --notes "Compilación automática desde ${{ github.sha }}"
