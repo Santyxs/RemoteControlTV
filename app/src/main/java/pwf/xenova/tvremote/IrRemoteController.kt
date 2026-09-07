@@ -25,9 +25,22 @@ enum class TvBrand(val displayName: String) {
     LG("LG"),
     SONY("Sony"),
     PANASONIC("Panasonic"),
-    TCL_HISENSE("TCL / Hisense"),
+    TCL_HISENSE("Hisense"),
+    PHILIPS("Philips"),
+    XIAOMI("Xiaomi"),
+    TOSHIBA("Toshiba"),
     GENERIC_NEC("Genérico (NEC)")
 }
+
+/**
+ * Orden de marcas para el asistente de configuración: las que tienen perfil
+ * propio primero, GENERIC_NEC al final como último recurso.
+ */
+val SETUP_BRAND_ORDER = listOf(
+    TvBrand.SAMSUNG, TvBrand.LG, TvBrand.SONY, TvBrand.PANASONIC,
+    TvBrand.TCL_HISENSE, TvBrand.PHILIPS, TvBrand.XIAOMI, TvBrand.TOSHIBA,
+    TvBrand.GENERIC_NEC
+)
 
 /**
  * Resultado de intentar enviar una acción por IR.
@@ -263,6 +276,102 @@ class IrRemoteController(context: Context) {
             RemoteAction.NUM_8 to (0x00 to 0x07),
             RemoteAction.NUM_9 to (0x00 to 0x08),
             RemoteAction.NUM_0 to (0x00 to 0x09)
+        ),
+        TvBrand.PHILIPS to mapOf(
+            RemoteAction.POWER to (0x80 to 0x0C),
+            RemoteAction.VOL_UP to (0x80 to 0x10),
+            RemoteAction.VOL_DOWN to (0x80 to 0x11),
+            RemoteAction.MUTE to (0x80 to 0x0D),
+            RemoteAction.CH_UP to (0x80 to 0x20),
+            RemoteAction.CH_DOWN to (0x80 to 0x21),
+            RemoteAction.UP to (0x80 to 0x40),
+            RemoteAction.DOWN to (0x80 to 0x41),
+            RemoteAction.LEFT to (0x80 to 0x42),
+            RemoteAction.RIGHT to (0x80 to 0x43),
+            RemoteAction.OK to (0x80 to 0x44),
+            RemoteAction.MENU to (0x80 to 0x45),
+            RemoteAction.EXIT to (0x80 to 0x46),
+            RemoteAction.BACK to (0x80 to 0x47),
+            RemoteAction.HOME to (0x80 to 0x48),
+            RemoteAction.GUIDE to (0x80 to 0x49),
+            RemoteAction.HDMI to (0x80 to 0x4A),
+            RemoteAction.INFO to (0x80 to 0x4B),
+            RemoteAction.CH_LIST to (0x80 to 0x4C),
+            RemoteAction.SOURCE to (0x80 to 0x4A),
+            RemoteAction.NUM_1 to (0x80 to 0x01),
+            RemoteAction.NUM_2 to (0x80 to 0x02),
+            RemoteAction.NUM_3 to (0x80 to 0x03),
+            RemoteAction.NUM_4 to (0x80 to 0x04),
+            RemoteAction.NUM_5 to (0x80 to 0x05),
+            RemoteAction.NUM_6 to (0x80 to 0x06),
+            RemoteAction.NUM_7 to (0x80 to 0x07),
+            RemoteAction.NUM_8 to (0x80 to 0x08),
+            RemoteAction.NUM_9 to (0x80 to 0x09),
+            RemoteAction.NUM_0 to (0x80 to 0x0A)
+        ),
+        TvBrand.XIAOMI to mapOf(
+            RemoteAction.POWER to (0x08 to 0x0C),
+            RemoteAction.VOL_UP to (0x08 to 0x10),
+            RemoteAction.VOL_DOWN to (0x08 to 0x11),
+            RemoteAction.MUTE to (0x08 to 0x0D),
+            RemoteAction.CH_UP to (0x08 to 0x20),
+            RemoteAction.CH_DOWN to (0x08 to 0x21),
+            RemoteAction.UP to (0x08 to 0x40),
+            RemoteAction.DOWN to (0x08 to 0x41),
+            RemoteAction.LEFT to (0x08 to 0x42),
+            RemoteAction.RIGHT to (0x08 to 0x43),
+            RemoteAction.OK to (0x08 to 0x44),
+            RemoteAction.MENU to (0x08 to 0x45),
+            RemoteAction.EXIT to (0x08 to 0x46),
+            RemoteAction.BACK to (0x08 to 0x47),
+            RemoteAction.HOME to (0x08 to 0x48),
+            RemoteAction.GUIDE to (0x08 to 0x49),
+            RemoteAction.HDMI to (0x08 to 0x4A),
+            RemoteAction.INFO to (0x08 to 0x4B),
+            RemoteAction.CH_LIST to (0x08 to 0x4C),
+            RemoteAction.SOURCE to (0x08 to 0x4A),
+            RemoteAction.NUM_1 to (0x08 to 0x01),
+            RemoteAction.NUM_2 to (0x08 to 0x02),
+            RemoteAction.NUM_3 to (0x08 to 0x03),
+            RemoteAction.NUM_4 to (0x08 to 0x04),
+            RemoteAction.NUM_5 to (0x08 to 0x05),
+            RemoteAction.NUM_6 to (0x08 to 0x06),
+            RemoteAction.NUM_7 to (0x08 to 0x07),
+            RemoteAction.NUM_8 to (0x08 to 0x08),
+            RemoteAction.NUM_9 to (0x08 to 0x09),
+            RemoteAction.NUM_0 to (0x08 to 0x0A)
+        ),
+        TvBrand.TOSHIBA to mapOf(
+            RemoteAction.POWER to (0x43 to 0x0C),
+            RemoteAction.VOL_UP to (0x43 to 0x10),
+            RemoteAction.VOL_DOWN to (0x43 to 0x11),
+            RemoteAction.MUTE to (0x43 to 0x0D),
+            RemoteAction.CH_UP to (0x43 to 0x20),
+            RemoteAction.CH_DOWN to (0x43 to 0x21),
+            RemoteAction.UP to (0x43 to 0x40),
+            RemoteAction.DOWN to (0x43 to 0x41),
+            RemoteAction.LEFT to (0x43 to 0x42),
+            RemoteAction.RIGHT to (0x43 to 0x43),
+            RemoteAction.OK to (0x43 to 0x44),
+            RemoteAction.MENU to (0x43 to 0x45),
+            RemoteAction.EXIT to (0x43 to 0x46),
+            RemoteAction.BACK to (0x43 to 0x47),
+            RemoteAction.HOME to (0x43 to 0x48),
+            RemoteAction.GUIDE to (0x43 to 0x49),
+            RemoteAction.HDMI to (0x43 to 0x4A),
+            RemoteAction.INFO to (0x43 to 0x4B),
+            RemoteAction.CH_LIST to (0x43 to 0x4C),
+            RemoteAction.SOURCE to (0x43 to 0x4A),
+            RemoteAction.NUM_1 to (0x43 to 0x01),
+            RemoteAction.NUM_2 to (0x43 to 0x02),
+            RemoteAction.NUM_3 to (0x43 to 0x03),
+            RemoteAction.NUM_4 to (0x43 to 0x04),
+            RemoteAction.NUM_5 to (0x43 to 0x05),
+            RemoteAction.NUM_6 to (0x43 to 0x06),
+            RemoteAction.NUM_7 to (0x43 to 0x07),
+            RemoteAction.NUM_8 to (0x43 to 0x08),
+            RemoteAction.NUM_9 to (0x43 to 0x09),
+            RemoteAction.NUM_0 to (0x43 to 0x0A)
         )
     )
 

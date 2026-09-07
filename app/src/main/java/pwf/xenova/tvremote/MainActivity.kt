@@ -66,33 +66,52 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MaterialTheme(colorScheme = darkColorScheme()) {
-                RemoteScreen(
-                    irController = irController,
-                    hapticsController = hapticsController,
-                    onAction = { action ->
-                        try {
-                            hapticsController.vibrate()
-                            when (val result = irController.send(action)) {
-                                is SendResult.Success -> {}
-                                is SendResult.NoHardware -> Toast.makeText(
-                                    this, "Este teléfono no tiene emisor infrarrojo", Toast.LENGTH_SHORT
-                                ).show()
-                                is SendResult.NoCode -> Toast.makeText(
-                                    this, "Código no disponible para esta marca", Toast.LENGTH_SHORT
-                                ).show()
-                                is SendResult.Exception -> Toast.makeText(
+                var setupComplete by remember {
+                    mutableStateOf(SetupPrefs.isSetupComplete(this@MainActivity))
+                }
+
+                if (!setupComplete) {
+                    SetupWizardScreen(
+                        irController = irController,
+                        hapticsController = hapticsController,
+                        onFinished = {
+                            SetupPrefs.setSetupComplete(this@MainActivity, true)
+                            setupComplete = true
+                        }
+                    )
+                } else {
+                    RemoteScreen(
+                        irController = irController,
+                        hapticsController = hapticsController,
+                        onReconfigure = {
+                            SetupPrefs.setSetupComplete(this@MainActivity, false)
+                            setupComplete = false
+                        },
+                        onAction = { action ->
+                            try {
+                                hapticsController.vibrate()
+                                when (val result = irController.send(action)) {
+                                    is SendResult.Success -> {}
+                                    is SendResult.NoHardware -> Toast.makeText(
+                                        this, "Este teléfono no tiene emisor infrarrojo", Toast.LENGTH_SHORT
+                                    ).show()
+                                    is SendResult.NoCode -> Toast.makeText(
+                                        this, "Código no disponible para esta marca", Toast.LENGTH_SHORT
+                                    ).show()
+                                    is SendResult.Exception -> Toast.makeText(
+                                        this, "No se pudo enviar la señal", Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            } catch (e: Exception) {
+                                // Ultima red de seguridad: cualquier fallo inesperado al procesar
+                                // una pulsación (vibracion, IR, lo que sea) nunca debe cerrar la app
+                                Toast.makeText(
                                     this, "No se pudo enviar la señal", Toast.LENGTH_SHORT
                                 ).show()
                             }
-                        } catch (e: Exception) {
-                            // Ultima red de seguridad: cualquier fallo inesperado al procesar
-                            // una pulsación (vibracion, IR, lo que sea) nunca debe cerrar la app
-                            Toast.makeText(
-                                this, "No se pudo enviar la señal", Toast.LENGTH_SHORT
-                            ).show()
                         }
-                    }
-                )
+                    )
+                }
             }
         }
     }
@@ -102,6 +121,7 @@ class MainActivity : ComponentActivity() {
 fun RemoteScreen(
     irController: IrRemoteController,
     hapticsController: HapticsController,
+    onReconfigure: () -> Unit,
     onAction: (RemoteAction) -> Unit
 ) {
     var selectedTab by remember { mutableStateOf(0) }
@@ -127,7 +147,8 @@ fun RemoteScreen(
                     brand = brand,
                     onBrandChange = { brand = it; irController.brand = it },
                     hapticsEnabled = hapticsEnabled,
-                    onHapticsChange = { hapticsEnabled = it; hapticsController.enabled = it }
+                    onHapticsChange = { hapticsEnabled = it; hapticsController.enabled = it },
+                    onReconfigure = onReconfigure
                 )
             }
         }
@@ -260,7 +281,8 @@ fun SettingsTabContent(
     brand: TvBrand,
     onBrandChange: (TvBrand) -> Unit,
     hapticsEnabled: Boolean,
-    onHapticsChange: (Boolean) -> Unit
+    onHapticsChange: (Boolean) -> Unit,
+    onReconfigure: () -> Unit
 ) {
     Spacer(Modifier.height(32.dp))
 
@@ -301,6 +323,23 @@ fun SettingsTabContent(
     }
 
     Spacer(Modifier.height(16.dp))
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(ButtonBg)
+            .clickable { onReconfigure() }
+            .padding(horizontal = 18.dp, vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text("Reconfigurar televisor", color = TextPrimary, fontSize = 15.sp)
+        Text("›", color = TextSecondary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+    }
+
+    Spacer(Modifier.height(16.dp))
+
 
     UpdateSection()
 }
