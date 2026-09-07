@@ -393,12 +393,53 @@ class IrRemoteController(context: Context) {
             ?: return SendResult.NoCode
 
         return try {
-            val pattern = buildNecPattern(pair.first, pair.second)
+            val pattern = if (brand == TvBrand.SAMSUNG) {
+                buildSamsungPattern(pair.first, pair.second)
+            } else {
+                buildNecPattern(pair.first, pair.second)
+            }
             manager.transmit(carrierFrequency, pattern)
             SendResult.Success
         } catch (e: Exception) {
             SendResult.Exception(e.javaClass.simpleName + ": " + (e.message ?: "sin mensaje"))
         }
+    }
+
+    /**
+     * Construye el patrón de pulsos (microsegundos) del protocolo real de Samsung
+     * ("Samsung32"): header 4.5ms mark + 4.5ms space, 8 bits de dirección
+     * repetidos TAL CUAL (sin invertir — a diferencia de NEC estándar), 8 bits
+     * de comando + su inverso, y un stop bit final. Confirmado contra la
+     * especificación IRP de Samsung32: (8,-8, D:8, S:8, F:8, ~F:8, stop).
+     * Timing de bits idéntico a NEC (562us unidad).
+     */
+    private fun buildSamsungPattern(address: Int, command: Int): IntArray {
+        val pulses = mutableListOf<Int>()
+        val unit = 562
+
+        // Header
+        pulses.add(unit * 8) // 4.5ms mark
+        pulses.add(unit * 8) // 4.5ms space
+
+        fun addByte(byte: Int) {
+            for (i in 0 until 8) {
+                val bit = (byte shr i) and 1
+                pulses.add(unit)
+                pulses.add(if (bit == 1) unit * 3 else unit)
+            }
+        }
+
+        val commandInv = command.inv() and 0xFF
+
+        addByte(address and 0xFF)
+        addByte(address and 0xFF) // repetido, NO invertido (a diferencia de NEC)
+        addByte(command and 0xFF)
+        addByte(commandInv)
+
+        // Stop bit
+        pulses.add(unit)
+
+        return pulses.toIntArray()
     }
 
     /**
