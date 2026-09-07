@@ -601,6 +601,6 @@ private fun DoneStep(brandName: String, onFinish: () -> Unit) {
         Spacer(Modifier.height(16.dp))
         WizardBody("Hemos conectado tu móvil con tu televisor.")
         Spacer(Modifier.height(40.dp))
-        WizardPrimaryButton("🏠  Ir al mando", onFinish)
+        WizardPrimaryButton("Listo", onFinish)
     }
 }
