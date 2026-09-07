@@ -61,6 +61,9 @@ fun Modifier.pressableScale(onClick: () -> Unit): Modifier {
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Mantener la pantalla encendida mientras se usa el mando (evita que se
+        // bloquee sola entre pulsaciones cortas y espaciadas)
+        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         val irController = IrRemoteController(this)
         val hapticsController = HapticsController(this)
 
